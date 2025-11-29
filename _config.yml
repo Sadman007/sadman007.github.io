@@ -1,0 +1,7 @@
+title: "Sadman's Thoughts"
+description: "Tech, life, and occasional updates."
+url: "https://sadman007.github.io"
+theme: null
+permalink: /:categories/:title/
+markdown: kramdown
+author: "Sadman Sakib"
