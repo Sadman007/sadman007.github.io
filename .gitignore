@@ -1,0 +1,15 @@
+# Build outputs
+_site/
+.jekyll-cache/
+.sass-cache/
+
+# Bundler installs
+vendor/
+.bundle/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+
+# Local environment secrets
+.env
