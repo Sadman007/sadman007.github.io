@@ -105,6 +105,12 @@ h3 {
   font-size: calc(0.9rem * var(--font-scale));
 }
 
+.empty-state {
+  font-size: calc(1.2rem * var(--font-scale));
+  color: var(--text-color);
+  font-weight: 600;
+}
+
 .post-list {
   list-style: none;
   padding: 0;
