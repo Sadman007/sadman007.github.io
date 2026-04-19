@@ -16,6 +16,69 @@
   box-sizing: border-box;
 }
 
+.post-content img {
+  max-width: 100%;
+  width: 350px; /* Scales them down to roughly 30% of the container width on desktop */
+  height: auto;
+  border-radius: 8px;
+  display: block;
+  margin: 2rem auto;
+}
+
+.post-content blockquote {
+  margin: 2rem 0;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid var(--accent-color);
+  background: transparent;
+  font-style: italic;
+  font-size: calc(24px * var(--font-scale));
+  color: var(--muted-color);
+}
+
+.references-section {
+  margin-top: 4rem;
+  padding: 2rem;
+  background: var(--card-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.references-section h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: calc(22px * var(--font-scale));
+  color: var(--text-color);
+}
+
+.references-section p {
+  font-size: calc(18px * var(--font-scale));
+  color: var(--text-color);
+  margin-bottom: 1rem;
+}
+
+.references-section ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: var(--text-color);
+}
+
+.references-section li {
+  margin-bottom: 0.75rem;
+  font-size: calc(17px * var(--font-scale));
+}
+
+.references-section li:last-child {
+  margin-bottom: 0;
+}
+
+.post-content blockquote p {
+  margin: 0;
+}
+
 body {
   margin: 0;
   padding: 24px;
@@ -126,10 +189,14 @@ h3 {
   border: 1px solid var(--border-color);
   border-radius: 12px;
   box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
 }
 
 .post-item h3 {
-  margin: 6px 0 8px;
+  margin: 0;
   font-size: calc(22px * var(--font-scale));
 }
 
