@@ -73,6 +73,11 @@ body {
   color: var(--ink);
 }
 .kicker-bar .brand .dot { color: var(--red); }
+.kicker-bar a.brand {
+  text-decoration: none;
+  transition: color .15s ease;
+}
+.kicker-bar a.brand:hover { color: var(--red); }
 .kicker-bar .meta {
   display: flex;
   align-items: center;
