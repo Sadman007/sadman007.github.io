@@ -7,6 +7,9 @@ _site/
 vendor/
 .bundle/
 
+# Git worktrees
+.worktrees/
+
 # OS/editor noise
 .DS_Store
 Thumbs.db
