@@ -963,37 +963,37 @@ button.toggle.active {
 
 /* Mobile: tighten kicker bar, shrink fonts, scale down actor boxes */
 @media (max-width: 600px) {
-  /* Kicker bar: smaller fonts, allow wrap without breaking layout */
-  .kicker-bar { padding: .6rem 1rem; gap: .4rem; flex-wrap: wrap; }
-  .kicker-bar .brand { font-size: 1.3rem; }
-  .kicker-bar .pill { font-size: 1rem; padding: 2px 10px; white-space: nowrap; }
-  .kicker-bar .step { font-size: 1rem; }
-  .kicker-bar .home-link { font-size: 1rem; padding: 4px 10px; }
+  /* Kicker bar: smaller fonts, single line, hide step label (slide name shown in nav) */
+  .kicker-bar { padding: .4rem .8rem; gap: .35rem; flex-wrap: nowrap; }
+  .kicker-bar .brand { font-size: 1.1rem; }
+  .kicker-bar .pill { font-size: .85rem; padding: 1px 8px; white-space: nowrap; }
+  .kicker-bar .step { display: none; }
+  .kicker-bar .home-link { font-size: .9rem; padding: 3px 8px; }
   .reset-btn { font-size: .9rem; padding: 4px 10px; }
   .reset-btn { display: none; }  /* hide reset on very small screens; keyboard 'r' or 9-key reset still works via existing handlers */
 
   /* Title block: smaller hero, tighter spacing */
-  .slide-title-block { margin-bottom: .8rem; }
-  .slide-title { font-size: clamp(1.5rem, 6vw, 2.2rem) !important; }
-  .slide-subtitle { font-size: .9rem; }
+  .slide-title-block { margin-bottom: .6rem; }
+  .slide-title { font-size: clamp(1.3rem, 5.5vw, 2rem) !important; }
+  .slide-subtitle { font-size: .85rem; line-height: 1.4; }
 
   /* Grid: tighter gap so stacked columns fit in viewport */
-  .grid-2 { gap: .7rem; }
-  .side-info { gap: .5rem; }
+  .grid-2 { gap: .5rem; }
+  .side-info { gap: .35rem; }
 
   /* Cards: less padding, smaller text */
-  .card { padding: .6rem; }
-  .card-kicker-wrap { margin-bottom: .2rem; }
-  .info-card { padding: .5rem .7rem; }
-  .info-card-title { font-size: 1rem; margin-bottom: .15rem; }
-  .info-card p { font-size: .85rem; }
-  .explanation, .try-this { padding: .6rem .8rem; font-size: .9rem; }
+  .card { padding: .5rem; }
+  .card-kicker-wrap { margin-bottom: .15rem; }
+  .info-card { padding: .4rem .6rem; }
+  .info-card-title { font-size: .95rem; margin-bottom: .1rem; }
+  .info-card p { font-size: .8rem; line-height: 1.45; }
+  .explanation, .try-this { padding: .5rem .7rem; font-size: .85rem; }
 
   /* Actor diagrams: even smaller boxes, allow vertical flow on tiny screens */
-  .actor-box { min-width: 60px; max-width: 100px; font-size: .95rem; padding: .4rem .5rem; }
+  .actor-box { min-width: 56px; max-width: 96px; font-size: .9rem; padding: .35rem .45rem; }
   .actor-arrow { font-size: 1.1rem; min-width: 18px; }
-  .actor { gap: 6px; padding: .4rem 0; }
-  .caption { font-size: 1rem; margin-top: .2rem; }
+  .actor { gap: 6px; padding: .3rem 0; }
+  .caption { font-size: .9rem; margin-top: .15rem; }
 
   /* Topic folder / partition / record chips: scale down */
   .topic-box { padding: .8rem; }
@@ -1019,5 +1019,5 @@ button.toggle.active {
   .nav-dot { width: 8px; height: 8px; }
 
   /* Slide body: tighter padding (bottom = navbar height + small gap) */
-  .slide-body { padding: .8rem .8rem 3.5rem; }
+  .slide-body { padding: .6rem .6rem 3rem; }
 }
