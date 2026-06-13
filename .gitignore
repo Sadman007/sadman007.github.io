@@ -16,3 +16,6 @@ Thumbs.db
 
 # Local environment secrets
 .env
+
+# Internal design / planning notes (kept out of the public site)
+docs/superpowers/
