@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class 11 — Kafka Fundamentals</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/kafka-contents/kafka_styles.css">
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- ============================================================
+       Slide 1: The Producers and Consumers
+       ============================================================ -->
+  <div class="slide" style="--accent: var(--blue);">
+    <div class="kicker-bar">
+      <span class="brand"><span class="dot">&#9670;</span> kafka-fundamentals</span>
+      <div class="meta">
+        <span class="pill kactive">Slide 1 of 9</span>
+        <span class="step">producers &amp; consumers</span>
+        <button class="reset-btn" onclick="resetAll()">&#x21BB; Reset</button>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="slide-title-block">
+        <h1 class="slide-title">Two sides of the <span class="pop">stream</span></h1>
+        <p class="slide-subtitle">Every Kafka system has a producer that writes events and a consumer that reads them. They are just apps you already know.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="side-info">
+          <div class="info-card blue reveal-step">
+            <div class="info-card-title">who produces?</div>
+            <p>Any app that has events to share: web servers (signups, clicks), mobile apps, backend services, IoT devices, microservices.</p>
+          </div>
+          <div class="info-card green reveal-step">
+            <div class="info-card-title">who consumes?</div>
+            <p>Any app that needs those events: analytics dashboards, notification services, ML pipelines, audit logs, search indexers.</p>
+          </div>
+          <div class="info-card yellow reveal-step">
+            <div class="info-card-title">the catch</div>
+            <p>Producers and consumers <em>don't talk to each other directly</em>. There's a middleman in between. That's what the next slide introduces.</p>
+          </div>
+          <div class="reveal-hint">&rarr; press right arrow to reveal</div>
+        </div>
+
+        <div class="card">
+          <div class="card-kicker-wrap">
+            <span class="slide-kicker tight">the actors</span>
+          </div>
+          <div class="actor simple">
+            <div class="actor-box producer">
+              Producer
+              <span class="actor-sub">the sender</span>
+            </div>
+            <div class="actor-arrow bidi"></div>
+            <div class="actor-box consumer">
+              Consumer
+              <span class="actor-sub">the reader</span>
+            </div>
+          </div>
+          <p class="caption">
+            ...but where do messages go in between?
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Slide 2: The Broker
+       ============================================================ -->
+  <div class="slide" style="--accent: var(--red);">
+    <div class="kicker-bar">
+      <span class="brand"><span class="dot">&#9670;</span> kafka-fundamentals</span>
+      <div class="meta">
+        <span class="pill kactive">Slide 2 of 9</span>
+        <span class="step">the broker</span>
+        <button class="reset-btn" onclick="resetAll()">&#x21BB; Reset</button>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="slide-title-block">
+        <h1 class="slide-title">Enter the <span class="pop">broker</span></h1>
+        <p class="slide-subtitle">A broker is a server that stores messages between the producer and the consumer. The producer writes to it; the consumer reads from it.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="side-info">
+          <div class="info-card red reveal-step">
+            <div class="info-card-title">what is a broker?</div>
+            <p>A <strong>Kafka broker</strong> is a long-running server process. You install Kafka, start a broker, and now producers can write to it and consumers can read from it.</p>
+          </div>
+          <div class="info-card yellow reveal-step">
+            <div class="info-card-title">what does it store?</div>
+            <p>Files on disk. Messages land in append-only log files. They sit there until the retention period expires (default: 7 days).</p>
+          </div>
+          <div class="info-card green reveal-step">
+            <div class="info-card-title">what's next?</div>
+            <p>A single broker is fine for dev. Production runs <em>many</em> brokers together &mdash; that's a <strong>cluster</strong>. More on that after we look at topics.</p>
+          </div>
+          <div class="reveal-hint">&rarr; press right arrow to reveal</div>
+        </div>
+
+        <div class="card">
+          <div class="card-kicker-wrap">
+            <span class="slide-kicker tight">the middleman</span>
+          </div>
+          <div class="actor flow">
+            <div class="actor-box producer">
+              Producer
+              <span class="actor-sub">writes to</span>
+            </div>
+            <div class="actor-arrow right"></div>
+            <div class="actor-box broker">
+              Broker
+              <span class="actor-sub">stores messages</span>
+            </div>
+            <div class="actor-arrow right"></div>
+            <div class="actor-box consumer">
+              Consumer
+              <span class="actor-sub">reads from</span>
+            </div>
+          </div>
+          <p class="caption">
+            producer &rarr; broker &rarr; consumer &mdash; the producer never sees the consumer
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Slide 3: Topics
+       ============================================================ -->
+  <div class="slide" style="--accent: var(--green);">
+    <div class="kicker-bar">
+      <span class="brand"><span class="dot">&#9670;</span> kafka-fundamentals</span>
+      <div class="meta">
+        <span class="pill kactive">Slide 3 of 9</span>
+        <span class="step">topics</span>
+        <button class="reset-btn" onclick="resetAll()">&#x21BB; Reset</button>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="slide-title-block">
+        <h1 class="slide-title">A topic is just a <span class="pop">named folder</span></h1>
+        <p class="slide-subtitle">The broker organizes messages into <em>topics</em>. A producer writes to a topic; a consumer reads from one. Think: a topic is a category of events.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="side-info">
+          <div class="info-card green reveal-step">
+            <div class="info-card-title">what goes in a topic?</div>
+            <p>Related events. Examples: <code>user-signups</code>, <code>order-events</code>, <code>page-views</code>, <code>audit-log</code>. Pick a name that describes the event type.</p>
+          </div>
+          <div class="info-card blue reveal-step">
+            <div class="info-card-title">who decides the topic?</div>
+            <p>The <em>producer</em> picks the topic name when sending. The <em>consumer</em> subscribes to whichever topics it cares about. Both must agree on the name.</p>
+          </div>
+          <div class="info-card purple reveal-step">
+            <div class="info-card-title">one topic, many uses</div>
+            <p>The same topic can be read by many consumers independently. Analytics, notifications, and ML can all read from <code>order-events</code> at their own pace.</p>
+          </div>
+          <div class="reveal-hint">&rarr; press right arrow to reveal</div>
+        </div>
+
+        <div class="card">
+          <div class="card-kicker-wrap">
+            <span class="slide-kicker tight">one broker, many topics</span>
+          </div>
+          <div class="topic-folder">
+            <div class="topic-folder-label">topic: user-signups</div>
+            <div class="topic-folder-msg">alice signed up</div>
+            <div class="topic-folder-msg">bob signed up</div>
+            <div class="topic-folder-msg">carol signed up</div>
+          </div>
+          <div class="topic-folder">
+            <div class="topic-folder-label">topic: order-events</div>
+            <div class="topic-folder-msg">order #42 created</div>
+            <div class="topic-folder-msg">order #42 paid</div>
+          </div>
+          <div class="topic-folder">
+            <div class="topic-folder-label">topic: page-views</div>
+            <div class="topic-folder-msg">GET /home</div>
+            <div class="topic-folder-msg">GET /pricing</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Slide 4: Partitions
+       ============================================================ -->
+  <div class="slide" style="--accent: var(--blue);">
+    <div class="kicker-bar">
+      <span class="brand"><span class="dot">&#9670;</span> kafka-fundamentals</span>
+      <div class="meta">
+        <span class="pill kactive">Slide 4 of 9</span>
+        <span class="step">partitions</span>
+        <button class="reset-btn" onclick="resetAll()">&#x21BB; Reset</button>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="slide-title-block">
+        <h1 class="slide-title">One topic, <span class="pop">many parallel lanes</span></h1>
+        <p class="slide-subtitle">A topic is split into partitions &mdash; ordered, append-only log files. Each partition lives on one broker, but a topic's partitions can be spread across the cluster.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="side-info">
+          <div class="info-card blue reveal-step">
+            <div class="info-card-title">why split?</div>
+            <p>More partitions = more parallel writers = higher throughput. One big file is a bottleneck; many smaller files write in parallel.</p>
+          </div>
+          <div class="info-card yellow reveal-step">
+            <div class="info-card-title">partitions live on brokers</div>
+            <p>A topic is a <em>name</em>. The partitions under that name are files scattered across your cluster.</p>
+            <div class="cluster">
+              <div class="cluster-bar-wrap">
+                <span class="cluster-bar-label">Topic A</span>
+                <div class="cluster-bar">
+                  <div class="cluster-cell"><span class="pid">P0</span></div>
+                  <div class="cluster-cell"><span class="pid">P1</span></div>
+                  <div class="cluster-cell"><span class="pid">P2</span></div>
+                </div>
+              </div>
+              <div class="cluster-arrows">
+                <span>&uarr;</span>
+                <span>&uarr;</span>
+                <span>&uarr;</span>
+              </div>
+              <div class="cluster-arrows">
+                <div class="cluster-broker">Broker 1</div>
+                <div class="cluster-broker">Broker 2</div>
+                <div class="cluster-broker">Broker 3</div>
+              </div>
+              <div class="cluster-caption">one topic, three partitions, scattered across the cluster</div>
+            </div>
+          </div>
+          <div class="explanation reveal-step">
+            <div class="explanation-label">rule of thumb</div>
+            <p>Plan partition count from your <strong>peak</strong> load, not your current load. You can add partitions, but you can never reduce them.</p>
+          </div>
+          <div class="reveal-hint">&rarr; press right arrow to reveal</div>
+        </div>
+
+        <div class="viz flush">
+          <div class="topic-box">
+            <div class="topic-label"><span class="ep">topic</span>user-signups</div>
+            <div class="partitions" id="partitions">
+              <div class="partition" data-partition="0"><div class="partition-title">Partition 0</div></div>
+              <div class="partition" data-partition="1"><div class="partition-title">Partition 1</div></div>
+              <div class="partition" data-partition="2"><div class="partition-title">Partition 2</div></div>
+            </div>
+          </div>
+          <div class="controls">
+            <button onclick="addRecord()">Add Record</button>
+            <button onclick="addBurst()">Add 5 Records</button>
+            <button class="danger" onclick="resetPartitions()">Reset</button>
+          </div>
+          <div class="try-this" style="margin-top: .8rem;">
+            <div class="try-this-label">try this &rarr;</div>
+            <p>Click <strong>Add Record</strong> a few times. Records round-robin across the three partitions. Within one partition, offsets are strict.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Slide 5: Consumer Groups
+       ============================================================ -->
+  <div class="slide" style="--accent: var(--green);">
+    <div class="kicker-bar">
+      <span class="brand"><span class="dot">&#9670;</span> kafka-fundamentals</span>
+      <div class="meta">
+        <span class="pill kactive">Slide 5 of 9</span>
+        <span class="step">consumer groups</span>
+        <button class="reset-btn" onclick="resetAll()">&#x21BB; Reset</button>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="slide-title-block">
+        <h1 class="slide-title">One consumer per partition, <span class="pop">always</span></h1>
+        <p class="slide-subtitle">A consumer group is a team sharing the work. Different groups read the same topic independently at their own pace.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="side-info">
+          <div class="info-card green reveal-step">
+            <div class="info-card-title">how scaling works</div>
+            <p>Add consumers to a group &rarr; partitions rebalance &rarr; more parallel work. <strong>But:</strong> more active consumers than partitions = idle ones.</p>
+          </div>
+          <div class="info-card purple reveal-step">
+            <div class="info-card-title">multiple groups, same topic</div>
+            <p>Group A (analytics) and Group B (notifications) read the <em>same</em> topic at their own pace. One crashing doesn't affect the other.</p>
+          </div>
+          <div class="try-this reveal-step">
+            <div class="try-this-label">try this &rarr;</div>
+            <p>Add a 4th consumer to either group. It goes <strong>idle</strong> &mdash; you can never have more active consumers than partitions.</p>
+          </div>
+          <div class="reveal-hint">&rarr; press right arrow to reveal</div>
+        </div>
+
+        <div class="viz flush">
+          <div class="topic-box">
+            <div class="topic-label"><span class="ep">topic</span>orders &mdash; 3 partitions</div>
+            <div class="partitions">
+              <div class="partition" data-partition="0">
+                <div class="partition-title">P0</div>
+                <div class="record green">Offset 0</div>
+                <div class="record green">Offset 3</div>
+              </div>
+              <div class="partition" data-partition="1">
+                <div class="partition-title">P1</div>
+                <div class="record green">Offset 1</div>
+                <div class="record green">Offset 4</div>
+              </div>
+              <div class="partition" data-partition="2">
+                <div class="partition-title">P2</div>
+                <div class="record green">Offset 2</div>
+                <div class="record green">Offset 5</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow">&darr;</div>
+
+          <div class="group-row">
+            <div class="group-col">
+              <div class="group-col-title">Group A &mdash; Analytics</div>
+              <div class="consumers" id="consumersA">
+                <div class="consumer active"><div>Consumer A1</div><div class="assignment">P0, P1</div></div>
+                <div class="consumer active"><div>Consumer A2</div><div class="assignment">P2</div></div>
+              </div>
+              <div class="controls">
+                <button onclick="addConsumer('A')">+ Consumer</button>
+                <button class="danger" onclick="removeConsumer('A')">- Consumer</button>
+              </div>
+            </div>
+
+            <div class="group-col">
+              <div class="group-col-title">Group B &mdash; Notifications</div>
+              <div class="consumers" id="consumersB">
+                <div class="consumer active"><div>Consumer B1</div><div class="assignment">P0</div></div>
+                <div class="consumer active"><div>Consumer B2</div><div class="assignment">P1</div></div>
+                <div class="consumer active"><div>Consumer B3</div><div class="assignment">P2</div></div>
+              </div>
+              <div class="controls">
+                <button onclick="addConsumer('B')">+ Consumer</button>
+                <button class="danger" onclick="removeConsumer('B')">- Consumer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Slide 6: Key-Based Ordering
+       ============================================================ -->
+  <div class="slide" style="--accent: var(--purple);">
+    <div class="kicker-bar">
+      <span class="brand"><span class="dot">&#9670;</span> kafka-fundamentals</span>
+      <div class="meta">
+        <span class="pill kactive">Slide 6 of 9</span>
+        <span class="step">keys &amp; ordering</span>
+        <button class="reset-btn" onclick="resetAll()">&#x21BB; Reset</button>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="slide-title-block">
+        <h1 class="slide-title">Pick the <span class="pop">key</span>, pick the lane</h1>
+        <p class="slide-subtitle">With a key, all events for one entity always land in the same partition &mdash; guaranteeing order for that entity.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="side-info">
+          <div class="info-card purple reveal-step">
+            <div class="info-card-title">no key = random</div>
+            <p>Producer round-robins across partitions. User 1's events can land in P0, P2, P1 &mdash; <strong>order is lost</strong> for that user.</p>
+          </div>
+          <div class="info-card green reveal-step">
+            <div class="info-card-title">with key = strict order</div>
+            <p>Producer hashes the key. All events with <code>user_id=42</code> always go to the same partition &mdash; <strong>strictly ordered</strong> for that user.</p>
+          </div>
+          <div class="try-this reveal-step">
+            <div class="try-this-label">try this &rarr;</div>
+            <p>Send <strong>User 1</strong> three times in <em>No Key</em> mode &mdash; events scatter. Switch to <em>User ID Key</em> &mdash; all three cluster in one partition, in order.</p>
+          </div>
+          <div class="reveal-hint">&rarr; press right arrow to reveal</div>
+        </div>
+
+        <div class="viz flush">
+          <div class="mode-indicator" id="modeIndicator">Mode: <span class="hl">No Key</span> (Round-Robin)</div>
+          <div class="controls">
+            <button id="nokeyBtn" class="toggle active" onclick="setMode('nokey', this)">No Key</button>
+            <button class="toggle" onclick="setMode('key', this)">User ID Key</button>
+          </div>
+
+          <div class="producer">
+            <button class="blue" onclick="produce('user1')">Send: User 1</button>
+            <button class="orange" onclick="produce('user2')">Send: User 2</button>
+            <button class="purple" onclick="produce('user3')">Send: User 3</button>
+          </div>
+
+          <div class="topic-box">
+            <div class="topic-label"><span class="ep">topic</span>user-events</div>
+            <div class="partitions" id="keyPartitions">
+              <div class="partition" data-partition="0"><div class="partition-title">Partition 0</div></div>
+              <div class="partition" data-partition="1"><div class="partition-title">Partition 1</div></div>
+              <div class="partition" data-partition="2"><div class="partition-title">Partition 2</div></div>
+            </div>
+          </div>
+
+          <div class="explanation">
+            <div class="explanation-label">the rule</div>
+            <p>Pick the key by <em>what needs ordering</em> &mdash; e.g. <code>user_id</code>, <code>account_id</code>, <code>order_id</code>. One key &rarr; one partition &rarr; strict order.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Slide 7: Retention & Compaction (static, no interaction)
+       ============================================================ -->
+  <div class="slide" style="--accent: var(--red);">
+    <div class="kicker-bar">
+      <span class="brand"><span class="dot">&#9670;</span> kafka-fundamentals</span>
+      <div class="meta">
+        <span class="pill kactive">Slide 7 of 9</span>
+        <span class="step">retention &amp; compaction</span>
+        <button class="reset-btn" onclick="resetAll()">&#x21BB; Reset</button>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="slide-title-block">
+        <h1 class="slide-title">Kafka <span class="pop">forgets</span> on purpose</h1>
+        <p class="slide-subtitle">The log keeps appending forever &mdash; your disk doesn't. Two cleanup strategies, both running in the background: <em>time retention</em> deletes by age, <em>log compaction</em> keeps only the latest value per key.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="side-info">
+          <div class="info-card yellow reveal-step">
+            <div class="info-card-title">why does this matter?</div>
+            <p>A topic is an append-only log. Every record is appended, never updated. Without cleanup, the log grows forever until the disk fills up. You pick a <em>cleanup policy</em> per topic.</p>
+          </div>
+          <div class="info-card red reveal-step">
+            <div class="info-card-title">time retention</div>
+            <p>Default. Kafka deletes records older than N days (e.g. 7) or beyond a size limit. For <em>long-term</em> storage, sink to a database or data lake.</p>
+          </div>
+          <div class="info-card blue reveal-step">
+            <div class="info-card-title">log compaction</div>
+            <p>For "current state" topics (user profiles, config). Kafka keeps <strong>only the latest record per key</strong>. New consumers get the current state instantly &mdash; no replay needed.</p>
+          </div>
+          <div class="reveal-hint">&rarr; press right arrow to reveal</div>
+        </div>
+
+        <div class="retention-grid flush">
+          <div class="retention-panel time">
+            <div class="retention-panel-title">Time Retention (5 days)</div>
+            <div class="retention-panel-today">today &mdash; Day 7</div>
+            <div class="retention-records">
+              <div class="record stale">6 days ago: user=Alice, login</div>
+              <div class="record stale">5 days ago: user=Bob, click</div>
+              <div class="record fresh">4 days ago: user=Alice, logout</div>
+              <div class="record fresh">3 days ago: user=Bob, login</div>
+              <div class="record fresh">2 days ago: user=Alice, click</div>
+            </div>
+            <p class="caption">
+              Anything older than 5 days is deleted
+            </p>
+          </div>
+          <div class="retention-panel compact">
+            <div class="retention-panel-title">Log Compaction</div>
+            <div class="retention-panel-today">keep only the latest event per user</div>
+
+            <div class="retention-key-group">
+              <div class="retention-key-label">Alice</div>
+              <div class="record stale">6 days ago &mdash; login <span class="retention-reason">older, dropped</span></div>
+              <div class="record stale">4 days ago &mdash; logout <span class="retention-reason">older, dropped</span></div>
+              <div class="record fresh">2 days ago &mdash; click <span class="retention-reason">latest &mdash; kept</span></div>
+            </div>
+
+            <div class="retention-key-group">
+              <div class="retention-key-label">Bob</div>
+              <div class="record stale">5 days ago &mdash; click <span class="retention-reason">older, dropped</span></div>
+              <div class="record fresh">3 days ago &mdash; login <span class="retention-reason">latest &mdash; kept</span></div>
+            </div>
+
+            <p class="caption">
+              The log now holds the current state: Alice = click, Bob = login.
+            </p>
+          </div>
+        </div>
+        <p class="retention-when">
+          <strong>When does cleanup happen?</strong> Continuously, in the background. As soon as a log segment is closed (default 1&nbsp;GB or 7 days), the broker checks the topic's cleanup policy and removes eligible records. Producers and consumers never block on it.
+        </p>
+      </div>
+
+      <div class="explanation">
+        <div class="explanation-label">rule of thumb</div>
+        <p>Kafka remembers the recent past. For long-term history, sink to a database. For "current state only" topics, use log compaction.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Slide 8: Kafka vs RabbitMQ
+       ============================================================ -->
+  <div class="slide" style="--accent: var(--purple);">
+    <div class="kicker-bar">
+      <span class="brand"><span class="dot">&#9670;</span> kafka-fundamentals</span>
+      <div class="meta">
+        <span class="pill kactive">Slide 8 of 9</span>
+        <span class="step">kafka vs rabbitmq</span>
+        <button class="reset-btn" onclick="resetAll()">&#x21BB; Reset</button>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="slide-title-block">
+        <h1 class="slide-title">Sticky notes, <span class="pop">not</span> bulletin boards</h1>
+        <p class="slide-subtitle">RabbitMQ is a task board &mdash; take a sticky note, do the task, throw it away. Kafka is an archive &mdash; everyone can read the same record, and it stays put.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="side-info">
+          <div class="info-card purple reveal-step">
+            <div class="info-card-title">the model difference</div>
+            <p><strong>RabbitMQ</strong> = queue, delete on consume. <strong>Kafka</strong> = log, retain on consume. They are not the same category of tool.</p>
+          </div>
+          <div class="info-card green reveal-step">
+            <div class="info-card-title">5 reasons to pick Kafka</div>
+            <p><strong>Replay</strong> (rewind any consumer). <strong>Multi-consumer</strong> (groups read independently). <strong>Order at scale</strong> (per partition). <strong>Event sourcing</strong>. <strong>Throughput</strong> (millions/sec).</p>
+          </div>
+          <div class="info-card yellow reveal-step">
+            <div class="info-card-title">when rabbitmq wins</div>
+            <p>Simple background jobs (PDF, email, thumbnails). Rich routing. Low operational complexity. Workloads in the <em>thousands</em>, not millions.</p>
+          </div>
+          <div class="reveal-hint">&rarr; press right arrow to reveal</div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">head-to-head</h3>
+          <table class="decision-table flush">
+            <thead>
+              <tr>
+                <th style="width: 30%;">Dimension</th>
+                <th style="width: 35%;">RabbitMQ</th>
+                <th style="width: 35%;">Kafka</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Model</td><td>Queue (delete on read)</td><td>Log (retain on read)</td></tr>
+              <tr><td>Throughput / node</td><td>~10k&ndash;50k msg/s</td><td>~100k&ndash;1M msg/s</td></tr>
+              <tr><td>Replay</td><td><span class="pill danger">No</span></td><td><span class="pill success">Yes</span></td></tr>
+              <tr><td>Multi-consumer reading</td><td>Fanout exchange (extra setup)</td><td>Native &mdash; every group is independent</td></tr>
+              <tr><td>Routing</td><td>Rich (topic, headers, fanout)</td><td>Simple (topic + key)</td></tr>
+              <tr><td>Operational complexity</td><td>Lower (single binary)</td><td>Higher (ZooKeeper/Kraft, tuning)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       Slide 9: Decision Table
+       ============================================================ -->
+  <div class="slide" style="--accent: var(--yellow);">
+    <div class="kicker-bar">
+      <span class="brand"><span class="dot">&#9670;</span> kafka-fundamentals</span>
+      <div class="meta">
+        <span class="pill kactive">Slide 9 of 9</span>
+        <span class="step">when to use each</span>
+        <button class="reset-btn" onclick="resetAll()">&#x21BB; Reset</button>
+      </div>
+    </div>
+    <div class="slide-body">
+      <div class="slide-title-block">
+        <h1 class="slide-title">Start simple. <span class="pop">Upgrade</span> when numbers demand it.</h1>
+        <p class="slide-subtitle">A queue is enough for most background jobs. Kafka is for timelines that many systems need to read.</p>
+      </div>
+
+      <table class="decision-table">
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th style="width: 22%;">Use</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="queue-row">
+            <td>Background job: generate PDF report</td>
+            <td><span class="pill">Queue</span></td>
+            <td>One-time task, no replay needed, simple retry is enough</td>
+          </tr>
+          <tr class="kafka-row">
+            <td>Click tracking: 10M events/day, analytics + ML + dashboard</td>
+            <td><span class="pill">Kafka</span></td>
+            <td>Multiple consumers, high throughput, replay for reprocessing</td>
+          </tr>
+          <tr class="queue-row">
+            <td>Send welcome email after signup</td>
+            <td><span class="pill">Queue</span></td>
+            <td>Simple one-time task, low volume, no history needed</td>
+          </tr>
+          <tr class="kafka-row">
+            <td>Order events: payment, shipping, delivery for audit trail</td>
+            <td><span class="pill">Kafka</span></td>
+            <td>Event sourcing &mdash; the timeline <em>is</em> the business record</td>
+          </tr>
+          <tr class="queue-row">
+            <td>Image thumbnail generation</td>
+            <td><span class="pill">Queue</span></td>
+            <td>One-time processing, serverless-friendly, no replay needed</td>
+          </tr>
+          <tr class="kafka-row">
+            <td>Activity feed: recs + notifications + analytics</td>
+            <td><span class="pill">Kafka</span></td>
+            <td>Three independent consumer groups reading the same events</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="explanation">
+        <div class="explanation-label">rule of thumb</div>
+        <p>Kafka is for <strong>timelines many systems need to read</strong>. A queue is for <strong>tasks one worker should do once</strong>. If you can't name why you need replay or multiple consumers &mdash; start with a queue.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+  <button class="nav-btn" id="prevBtn" onclick="prev()">&larr; Previous</button>
+  <div class="nav-dots">
+    <button class="nav-dot" onclick="goToSlide(0)"></button>
+    <button class="nav-dot" onclick="goToSlide(1)"></button>
+    <button class="nav-dot" onclick="goToSlide(2)"></button>
+    <button class="nav-dot" onclick="goToSlide(3)"></button>
+    <button class="nav-dot" onclick="goToSlide(4)"></button>
+    <button class="nav-dot" onclick="goToSlide(5)"></button>
+    <button class="nav-dot" onclick="goToSlide(6)"></button>
+    <button class="nav-dot" onclick="goToSlide(7)"></button>
+    <button class="nav-dot" onclick="goToSlide(8)"></button>
+  </div>
+  <span class="nav-label" id="navLabel">Producers &amp; Consumers</span>
+  <button class="nav-btn" id="nextBtn" onclick="next()">Next &rarr;</button>
+</nav>
+
+<script>
+  // ---- Slide Navigation with Reveal-Step pattern ----
+  const slideNames = [
+    'Producers & Consumers',
+    'The Broker',
+    'Topics',
+    'Partitions',
+    'Consumer Groups',
+    'Key-Based Ordering',
+    'Retention & Compaction',
+    'Kafka vs RabbitMQ',
+    'When to Use Each'
+  ];
+  let currentSlide = 0;
+  const totalSlides = 9;
+  const slides = document.querySelectorAll('.slide');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const navLabel = document.getElementById('navLabel');
+  const dots = document.querySelectorAll('.nav-dot');
+
+  // Returns the next unrevealed reveal-step on the current slide, or null
+  function getNextReveal(slideEl) {
+    const steps = slideEl.querySelectorAll('.reveal-step:not(.revealed)');
+    return steps.length > 0 ? steps[0] : null;
+  }
+
+  // Returns the last revealed card on the current slide (to "unreveal" it on prev), or null
+  function getLastRevealed(slideEl) {
+    const steps = Array.from(slideEl.querySelectorAll('.reveal-step.revealed'));
+    return steps.length > 0 ? steps[steps.length - 1] : null;
+  }
+
+  function updateRevealState() {
+    const slide = slides[currentSlide];
+    const hasUnrevealed = !!getNextReveal(slide);
+    slide.classList.toggle('has-unrevealed', hasUnrevealed);
+  }
+
+  function goToSlide(n) {
+    if (n < 0 || n >= totalSlides) return;
+    slides.forEach((s, i) => s.classList.toggle('active', i === n));
+    dots.forEach((d, i) => d.classList.toggle('active', i === n));
+    currentSlide = n;
+    prevBtn.disabled = n === 0;
+    nextBtn.disabled = n === totalSlides - 1;
+    navLabel.textContent = slideNames[n];
+    const body = slides[n].querySelector('.slide-body');
+    if (body) body.scrollTop = 0;
+    updateRevealState();
+  }
+
+  // "Next" press: reveal next card, or advance to next slide if all revealed
+  function next() {
+    const slide = slides[currentSlide];
+    const nextCard = getNextReveal(slide);
+    if (nextCard) {
+      nextCard.classList.add('revealed');
+      updateRevealState();
+    } else {
+      goToSlide(currentSlide + 1);
+    }
+  }
+
+  // "Prev" press: hide last revealed card, or go to previous slide
+  function prev() {
+    const slide = slides[currentSlide];
+    const lastCard = getLastRevealed(slide);
+    if (lastCard) {
+      lastCard.classList.remove('revealed');
+      updateRevealState();
+    } else {
+      // Going to a previous slide: reveal all its cards so the state is consistent
+      if (currentSlide > 0) {
+        const prevIdx = currentSlide - 1;
+        goToSlide(prevIdx);
+        // Reveal all cards on the previous slide (so user doesn't have to re-press to see content)
+        const prevSlide = slides[prevIdx];
+        prevSlide.querySelectorAll('.reveal-step').forEach(c => c.classList.add('revealed'));
+        updateRevealState();
+      }
+    }
+  }
+
+  // "Reset" press: go back to slide 1 and collapse all reveal steps
+  function resetAll() {
+    // Collapse every reveal step on every slide
+    slides.forEach(s => s.querySelectorAll('.reveal-step.revealed').forEach(c => c.classList.remove('revealed')));
+    // Reset interactive demos
+    if (typeof resetPartitions === 'function') resetPartitions();
+    if (typeof updateAssignments === 'function') updateAssignments();
+    // Reset key-based demo state (always call setMode to clear records and reset indicator)
+    const nokeyBtn = document.getElementById('nokeyBtn');
+    if (nokeyBtn) setMode('nokey', nokeyBtn);
+    // Go to first slide
+    goToSlide(0);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  });
+
+  // Touch swipe navigation for mobile (left swipe = next, right swipe = prev).
+  // Threshold: 50px horizontal, and horizontal must dominate vertical so vertical
+  // scrolling within the slide body still works naturally.
+  let touchStartX = 0, touchStartY = 0;
+  document.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    if (e.changedTouches.length !== 1) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50) return;
+    if (Math.abs(dx) < Math.abs(dy)) return;  // ignore vertical-dominant swipes
+    if (dx < 0) next(); else prev();
+  }, { passive: true });
+
+  // ---- Slide 4: Topics and Partitions ----
+  let offsetCounter = 0;
+  const partitions = document.querySelectorAll('#partitions .partition');
+
+  function addRecord() {
+    const i = offsetCounter % partitions.length;
+    const p = partitions[i];
+    const r = document.createElement('div');
+    r.className = 'record green';
+    r.textContent = 'Offset ' + offsetCounter;
+    p.appendChild(r);
+    offsetCounter++;
+  }
+  function addBurst() { for (let i = 0; i < 5; i++) addRecord(); }
+  function resetPartitions() {
+    partitions.forEach(p => Array.from(p.querySelectorAll('.record')).forEach(r => r.remove()));
+    offsetCounter = 0;
+  }
+
+  // ---- Slide 5: Consumer Groups ----
+  let consumerIds = { A: 2, B: 3 };
+  const partitionCount = 3;
+
+  function updateAssignments() {
+    ['A', 'B'].forEach(group => {
+      const container = document.getElementById('consumers' + group);
+      const consumers = container.querySelectorAll('.consumer');
+      const count = consumers.length;
+      consumers.forEach((consumer, index) => {
+        const assignment = [];
+        for (let p = index; p < partitionCount; p += count) assignment.push('P' + p);
+        const a = consumer.querySelector('.assignment');
+        if (assignment.length === 0) {
+          consumer.className = 'consumer idle';
+          a.textContent = 'IDLE';
+        } else {
+          consumer.className = 'consumer active';
+          a.textContent = assignment.join(', ');
+        }
+      });
+    });
+  }
+
+  function addConsumer(group) {
+    const container = document.getElementById('consumers' + group);
+    consumerIds[group]++;
+    const c = document.createElement('div');
+    c.className = 'consumer active';
+    c.innerHTML = '<div>Consumer ' + group + consumerIds[group] + '</div><div class="assignment"></div>';
+    container.appendChild(c);
+    updateAssignments();
+  }
+  function removeConsumer(group) {
+    const container = document.getElementById('consumers' + group);
+    const consumers = container.querySelectorAll('.consumer');
+    if (consumers.length > 1) {
+      consumers[consumers.length - 1].remove();
+      updateAssignments();
+    }
+  }
+
+  // ---- Slide 6: Key-Based Partitioning ----
+  let keyMode = 'nokey';
+  let counts = { user1: 0, user2: 0, user3: 0 };
+  const keyPartitions = document.querySelectorAll('#keyPartitions .partition');
+
+  function setMode(mode, btn) {
+    keyMode = mode;
+    btn.closest('.viz').querySelectorAll('.toggle').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const ind = document.getElementById('modeIndicator');
+    if (mode === 'nokey') {
+      ind.innerHTML = 'Mode: <span class="hl">No Key</span> (Round-Robin)';
+    } else {
+      ind.innerHTML = 'Mode: <span class="hl">User ID Key</span> (Hash-Based)';
+    }
+    keyPartitions.forEach(p => Array.from(p.querySelectorAll('.record')).forEach(r => r.remove()));
+    counts = { user1: 0, user2: 0, user3: 0 };
+  }
+
+  function getPartition(user) {
+    if (keyMode === 'nokey') {
+      const total = counts.user1 + counts.user2 + counts.user3;
+      return total % keyPartitions.length;
+    } else {
+      const hash = user.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+      return hash % keyPartitions.length;
+    }
+  }
+
+  function produce(user) {
+    counts[user]++;
+    const pi = getPartition(user);
+    const r = document.createElement('div');
+    r.className = 'record ' + (user === 'user1' ? 'blue' : user === 'user2' ? 'orange' : 'purple');
+    r.textContent = user + ' #' + counts[user];
+    keyPartitions[pi].appendChild(r);
+  }
+
+  // ---- Init ----
+  goToSlide(0);
+  updateAssignments();
+</script>
+
+</body>
+</html>
