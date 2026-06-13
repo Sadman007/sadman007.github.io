@@ -1,0 +1,993 @@
+/* ============================================================
+ * Kafka Fundamentals — Shared Slide Deck Styles
+ * Used by class11/kafka_visuals.html and any other Kafka slides.
+ * ============================================================ */
+
+:root {
+  --yellow: #E9B44C;
+  --red: #C2703D;
+  --blue: #5B7B9A;
+  --purple: #8A7BA8;
+  --green: #6B8F71;
+  --ink: #3D3229;
+  --paper: #FFFDF8;
+  --bg: #FAF3E7;
+  --line: rgba(61,50,41,.18);
+  --muted: rgba(61,50,41,.7);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 1.15rem;             /* base font bumped from default 16px to ~18px */
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  background-image: radial-gradient(rgba(61,50,41,.06) 1.1px, transparent 1.3px);
+  background-size: 22px 22px;
+  overflow: hidden;
+}
+
+/* ---- Deck viewport ---- */
+.deck {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  padding: 0;
+}
+.slide.active {
+  display: flex;
+  animation: fadeIn 0.35s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Top kicker bar ---- */
+.kicker-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .9rem clamp(1.5rem, 4vw, 3rem);
+  border-bottom: 2px solid var(--ink);
+  background: var(--bg);
+  flex-shrink: 0;
+  gap: 1rem;
+}
+.kicker-bar .brand {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--ink);
+}
+.kicker-bar .brand .dot { color: var(--red); }
+.kicker-bar .meta {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+}
+.kicker-bar .pill {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.35rem;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: .05em .8em;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.kicker-bar .pill.kactive {
+  background: var(--accent);
+  color: var(--paper);
+}
+.kicker-bar .step {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.55rem;
+  color: var(--ink);
+}
+
+/* ---- Reset button (top kicker bar) ---- */
+.reset-btn {
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all .15s ease;
+  box-shadow: 2px 2px 0 var(--ink);
+  margin: 0;
+  flex-shrink: 0;
+}
+.reset-btn:hover {
+  background: var(--red);
+  color: var(--paper);
+  border-color: var(--red);
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: translate(-1px, -1px);
+}
+.reset-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+/* ---- Slide body ---- */
+.slide-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.6rem clamp(1.5rem, 3vw, 3rem) 5rem;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+.slide-body::-webkit-scrollbar { width: 8px; }
+.slide-body::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+.slide-body::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* ---- Title block ---- */
+.slide-title-block {
+  text-align: center;
+  margin-bottom: 1.4rem;
+}
+.card-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  text-align: center;
+  margin-bottom: .8rem;
+  color: var(--ink);
+}
+.slide-kicker {
+  display: inline-block;
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  color: var(--ink);
+  background: var(--accent);
+  border: 2px solid var(--ink);
+  padding: .15em .9em;
+  border-radius: 999px;
+  transform: rotate(-1.5deg);
+  box-shadow: 0 4px 10px rgba(61,50,41,.18);
+  margin-bottom: .8rem;
+}
+.slide-kicker.tight { margin: 0; }      /* used inside cards where the surrounding div already centers */
+.slide-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  line-height: 1.05;
+  font-size: clamp(2.4rem, 4.2vw, 3.8rem);
+  margin-bottom: .5rem;
+}
+.slide-title .pop { color: var(--accent); }
+.slide-subtitle {
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  color: var(--muted);
+  font-weight: 500;
+  max-width: 820px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* ---- Cards ---- */
+.card {
+  position: relative;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 18px;
+  padding: 1.3rem 1.5rem;
+  box-shadow: 6px 6px 0 var(--ink);
+}
+.card-kicker-wrap {
+  text-align: center;
+  margin-bottom: .8rem;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 16px 16px 0 0;
+}
+
+/* ---- Two-column layout ---- */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.4rem;
+  align-items: start;
+}
+
+/* ---- Try this / Explanation blocks ---- */
+.try-this,
+.explanation {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  padding: .9rem 1.2rem;
+  margin-bottom: 1rem;
+  box-shadow: 4px 4px 0 var(--ink);
+  font-size: 1.1rem;
+  line-height: 1.55;
+}
+.try-this { border-color: var(--purple); box-shadow: 4px 4px 0 var(--purple); }
+.explanation { border-color: var(--blue); box-shadow: 4px 4px 0 var(--blue); margin-top: 1rem; }
+.try-this-label,
+.explanation-label {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: .15rem;
+}
+.try-this-label { color: var(--purple); }
+.explanation-label { color: var(--blue); }
+.try-this p strong,
+.explanation strong { color: var(--ink); }
+
+/* ---- Visualization container ---- */
+.viz {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 18px;
+  padding: 1.4rem;
+  margin-bottom: 1rem;
+  box-shadow: 6px 6px 0 var(--ink);
+}
+.topic-box {
+  background: var(--bg);
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  padding: 1.1rem;
+  margin-bottom: .9rem;
+}
+.topic-label {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.35rem;
+  margin-bottom: .8rem;
+  text-align: center;
+  color: var(--ink);
+}
+.topic-label .ep {
+  font-family: 'Caveat', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  margin-right: .4em;
+}
+.partitions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.partition {
+  flex: 1;
+  background: #fff;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: 10px;
+  min-height: 160px;
+  position: relative;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.partition:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.partition-title {
+  text-align: center;
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.record {
+  padding: 6px 10px;
+  margin: 4px 0;
+  border-radius: 6px;
+  text-align: center;
+  font-size: .9em;
+  font-weight: 600;
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0,0,0,.15);
+  color: #fff;
+}
+.record.green  { background: var(--green); }
+.record.blue   { background: var(--blue); }
+.record.orange { background: var(--red); }
+.record.purple { background: var(--purple); }
+.record.yellow { background: var(--yellow); color: var(--ink); }
+.record.stale {
+  background: #ffcdd2;
+  color: #c62828;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+.record.fresh {
+  background: #c8e6c9;
+  color: #2e7d32;
+  font-weight: 700;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---- Consumer group section ---- */
+.consumers {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: .8rem;
+  flex-wrap: wrap;
+}
+.consumer {
+  background: #fff;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: center;
+  min-width: 100px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all .2s ease;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.consumer.active {
+  background: var(--green);
+  color: #fff;
+}
+.consumer.idle {
+  background: var(--yellow);
+  color: var(--ink);
+  border-style: dashed;
+}
+.assignment {
+  margin-top: 4px;
+  font-weight: 700;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2rem;
+}
+.consumer.active .assignment { color: rgba(255,255,255,.85); }
+.arrow {
+  text-align: center;
+  font-size: 1.8em;
+  color: var(--muted);
+  margin: .4rem 0;
+}
+
+/* ---- Controls ---- */
+.controls {
+  text-align: center;
+  margin: .7rem 0;
+}
+button {
+  padding: 9px 18px;
+  margin: 0 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font-family: 'Work Sans', sans-serif;
+  transition: all .15s ease;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+  background: #fff8f0;
+}
+button:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+button.danger {
+  background: var(--red);
+  color: #fff;
+}
+button.danger:hover { background: #b5632f; }
+button.toggle {
+  background: var(--paper);
+}
+button.toggle.active {
+  background: var(--green);
+  color: #fff;
+}
+
+/* ---- Mode indicator ---- */
+.mode-indicator {
+  text-align: center;
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: .6rem;
+  font-size: 1.6rem;
+}
+.mode-indicator .hl {
+  background: var(--accent);
+  color: var(--ink);
+  padding: 0 .3em;
+  border-radius: 6px;
+}
+
+/* ---- Producer buttons row ---- */
+.producer {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: .5rem 0;
+}
+.producer button {
+  padding: 9px 18px;
+  font-size: 1rem;
+  margin: 0;
+}
+.producer button.blue   { background: var(--blue); color: #fff; }
+.producer button.orange { background: var(--red);  color: #fff; }
+.producer button.purple { background: var(--purple); color: #fff; }
+.producer button:hover  { filter: brightness(1.1); }
+
+/* ---- Decision table ---- */
+.decision-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: .8rem 0;
+  font-size: 1.05rem;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 5px 5px 0 var(--ink);
+}
+.decision-table th {
+  background: var(--ink);
+  color: #fff;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 700;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 1.1rem;
+}
+.decision-table td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.decision-table tr:last-child td { border-bottom: none; }
+.decision-table tr:nth-child(even) td { background: rgba(0,0,0,.02); }
+.decision-table .kafka-row { border-left: 5px solid var(--blue); }
+.decision-table .queue-row { border-left: 5px solid var(--green); }
+.decision-table .pill {
+  display: inline-block;
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.25rem;
+  padding: .05em .55em;
+  border-radius: 999px;
+  color: #fff;
+}
+.decision-table .kafka-row .pill { background: var(--blue); }
+.decision-table .queue-row .pill { background: var(--green); }
+.decision-table.flush { margin: 0; box-shadow: none; border: none; }  /* inside .card */
+
+/* Standalone pill color modifiers (used outside row context, e.g. yes/no cells) */
+.pill.danger  { background: var(--red); }
+.pill.success { background: var(--green); }
+
+/* ---- Group columns (consumer groups) ---- */
+.group-row {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.group-col {
+  flex: 1;
+  min-width: 300px;
+  background: var(--bg);
+  border: 2px dashed var(--ink);
+  border-radius: 12px;
+  padding: .8rem;
+}
+.group-col-title {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: 1.4rem;
+}
+
+/* ---- Side info column ---- */
+.side-info {
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+}
+.info-card {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  padding: .9rem 1.1rem;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.info-card-title {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.45rem;
+  margin-bottom: .25rem;
+}
+.info-card p {
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.info-card code {
+  background: rgba(91,123,154,.1);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: .95em;
+}
+.info-card.blue   { border-color: var(--blue);   box-shadow: 4px 4px 0 var(--blue); }
+.info-card.green  { border-color: var(--green);  box-shadow: 4px 4px 0 var(--green); }
+.info-card.purple { border-color: var(--purple); box-shadow: 4px 4px 0 var(--purple); }
+.info-card.red    { border-color: var(--red);    box-shadow: 4px 4px 0 var(--red); }
+.info-card.yellow { border-color: var(--yellow); box-shadow: 4px 4px 0 var(--yellow); }
+.info-card.blue   .info-card-title { color: var(--blue); }
+.info-card.green  .info-card-title { color: var(--green); }
+.info-card.purple .info-card-title { color: var(--purple); }
+.info-card.red    .info-card-title { color: var(--red); }
+.info-card.yellow .info-card-title { color: #b8923a; }
+
+/* ---- Reveal-step pattern ----
+   Mark an info card with class="reveal-step" to make it appear on
+   the next "right arrow" press, one at a time. Cards without the
+   class are visible immediately. The JS in the slide deck tracks
+   per-slide revealed state and only advances the slide when all
+   reveal steps are shown. Add a `<div class="reveal-hint">` at
+   the end of `.side-info` to show the pulsing prompt. */
+.reveal-step {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  max-height: 0;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+  transition: opacity .35s ease, transform .35s ease,
+              max-height .4s ease, margin .35s ease,
+              padding .35s ease, box-shadow .35s ease;
+}
+.reveal-step.revealed {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  max-height: 600px;
+}
+
+/* "Tap to reveal" hint shown only when there are unrevealed cards */
+.reveal-hint {
+  display: none;
+  text-align: center;
+  font-family: 'Caveat', cursive;
+  font-size: 1.3rem;
+  color: var(--muted);
+  margin-top: .5rem;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+.slide.has-unrevealed .reveal-hint { display: block; }
+@keyframes pulse {
+  0%, 100% { opacity: .55; }
+  50%      { opacity: 1; }
+}
+
+/* ---- Mini cluster diagram ---- */
+.cluster {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: .5rem;
+  font-family: 'Caveat', cursive;
+}
+.cluster-bar-wrap {
+  position: relative;
+  padding-top: 16px;
+  margin-top: 6px;
+}
+.cluster-bar {
+  display: flex;
+  align-items: stretch;
+  border: 2.5px solid var(--blue);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--paper);
+}
+.cluster-bar-label {
+  position: absolute;
+  top: 0;
+  left: 16px;
+  background: var(--bg);
+  padding: 0 8px;
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--blue);
+  z-index: 2;
+}
+.cluster-cell {
+  flex: 1;
+  border-right: 2px dashed rgba(91,123,154,.4);
+  padding: 8px 6px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--blue);
+  font-size: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.cluster-cell:last-child { border-right: none; }
+.cluster-cell .pid { font-size: 1.35rem; }
+.cluster-arrows {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  font-size: 1.3rem;
+  color: var(--muted);
+  justify-content: space-around;
+}
+.cluster-broker {
+  flex: 1;
+  background: #fff;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: center;
+  box-shadow: 2px 2px 0 var(--ink);
+  margin: 0 4px;
+}
+.cluster-caption {
+  text-align: center;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2rem;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ---- Actor diagram (slides 1, 2) ----
+   Use grid with explicit columns. For slide 1 (.actor.simple, 3
+   children), 3 columns fit in one row. For slide 2 (.actor.flow, 5
+   children), 5 columns are defined; on wide screens all fit in one
+   row, on narrow screens CSS auto-flows them. To prevent the
+   "lonely arrow" wrap pattern, arrows use a smaller min-width and
+   the whole grid sits in a centered, auto-fit container. */
+.actor {
+  display: grid;
+  gap: 12px;
+  align-items: center;
+  justify-items: center;
+  padding: 1.2rem 0;
+}
+.actor.simple { grid-template-columns: repeat(3, auto); }
+.actor.flow   { grid-template-columns: repeat(5, auto); }
+.actor-box {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  padding: .9rem 1.1rem;
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.45rem;
+  text-align: center;
+  box-shadow: 4px 4px 0 var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  /* Sized so 5 boxes + 4 arrows fit on one row in the .card on
+     a 2-col grid. min-width keeps text from breaking weirdly;
+     max-width prevents oversized boxes on giant screens. On
+     tablet and mobile, the media queries below shrink these. */
+  min-width: 110px;
+  max-width: 160px;
+}
+.actor-box.producer { border-color: var(--blue); box-shadow: 4px 4px 0 var(--blue); }
+.actor-box.broker   { border-color: var(--red);  box-shadow: 4px 4px 0 var(--red);  background: var(--yellow); }
+.actor-box.consumer { border-color: var(--green); box-shadow: 4px 4px 0 var(--green); }
+.actor-arrow {
+  font-size: 1.8rem;
+  color: var(--ink);
+  font-weight: 700;
+}
+.actor-arrow.bidi::before { content: '\2194'; }
+.actor-arrow.right::before { content: '\2192'; }
+.actor-sub {
+  font-size: .8rem;
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 500;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* ---- Shared caption (used under actor diagrams and on slide 7) ---- */
+.caption {
+  text-align: center;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25rem;
+  color: var(--muted);
+  margin-top: .6rem;
+}
+
+/* ---- Topic folder visual (slide 3) ---- */
+.topic-folder {
+  background: var(--paper);
+  border: 2px solid var(--blue);
+  border-radius: 12px;
+  padding: .8rem;
+  margin-bottom: .6rem;
+  box-shadow: 3px 3px 0 var(--blue);
+}
+.topic-folder-label {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: var(--blue);
+  text-align: center;
+  margin-bottom: .5rem;
+  border-bottom: 1.5px dashed rgba(91,123,154,.4);
+  padding-bottom: .4rem;
+}
+.topic-folder-msg {
+  background: #fff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 1rem;
+  margin: 4px 0;
+  border: 1px solid var(--line);
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 500;
+}
+
+/* ---- Retention timeline (static, slide 7) ---- */
+.retention-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+.retention-panel {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.retention-panel.time    { border-color: var(--red);    box-shadow: 4px 4px 0 var(--red); }
+.retention-panel.compact { border-color: var(--blue);   box-shadow: 4px 4px 0 var(--blue); }
+.retention-panel-title {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.4rem;
+  text-align: center;
+  margin-bottom: .5rem;
+}
+.retention-panel.time    .retention-panel-title { color: var(--red); }
+.retention-panel.compact .retention-panel-title { color: var(--blue); }
+.retention-panel-today {
+  font-family: 'Caveat', cursive;
+  font-size: 1.15rem;
+  text-align: center;
+  color: var(--muted);
+  margin-bottom: .6rem;
+  font-style: italic;
+}
+.retention-records {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.retention-key-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: .6rem;
+  padding-left: .3rem;
+  border-left: 3px solid var(--line);
+}
+.retention-key-label {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin-bottom: .15rem;
+  letter-spacing: .02em;
+}
+.retention-reason {
+  font-family: 'Caveat', cursive;
+  font-size: 1.05rem;
+  color: var(--muted);
+  margin-left: .3rem;
+}
+.retention-when {
+  font-size: 1.05rem;
+  color: var(--ink);
+  background: var(--paper);
+  border-left: 4px solid var(--yellow);
+  padding: .7rem 1rem;
+  margin-top: 1rem;
+  border-radius: 6px;
+  line-height: 1.5;
+}
+.retention-when strong {
+  color: var(--ink);
+  font-family: 'Fraunces', serif;
+}
+
+/* ---- Navigation bar ---- */
+.navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--ink);
+  padding: 12px clamp(1rem, 3vw, 2rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  z-index: 100;
+  box-shadow: 0 -4px 0 var(--ink);
+}
+.nav-btn {
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--paper);
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all .15s ease;
+  box-shadow: none;
+  margin: 0;
+}
+.nav-btn:hover {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  transform: translateY(-1px);
+}
+.nav-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+  transform: none;
+  background: var(--paper);
+  border-color: var(--paper);
+}
+.nav-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.nav-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.25);
+  cursor: pointer;
+  transition: all .25s ease;
+  border: 2px solid transparent;
+  padding: 0;
+  box-shadow: none;
+}
+.nav-dot:hover { background: rgba(255,255,255,.5); }
+.nav-dot.active {
+  background: var(--yellow);
+  width: 32px;
+  border-radius: 5px;
+}
+.nav-label {
+  color: var(--paper);
+  font-family: 'Caveat', cursive;
+  font-size: 1.4rem;
+  font-weight: 700;
+  flex: 1;
+  text-align: center;
+}
+
+/* ---- Flush utility: removes bottom margin on the last visible element in a column ---- */
+.flush { margin-bottom: 0 !important; }
+
+/* ---- Responsive ---- */
+
+/* Tablet and below: collapse 2-col layouts to 1, soften large fixed widths */
+@media (max-width: 900px) {
+  .group-row { flex-direction: column; }
+  .group-col { min-width: 0; }
+}
+@media (max-width: 800px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .retention-grid { grid-template-columns: 1fr; }
+  /* Actor diagrams: shrink the box min-width so 5 items fit on one row */
+  .actor-box { min-width: 80px; max-width: 120px; }
+}
+
+/* Mobile: tighten kicker bar, shrink fonts, scale down actor boxes */
+@media (max-width: 600px) {
+  /* Kicker bar: smaller fonts, allow wrap without breaking layout */
+  .kicker-bar { padding: .6rem 1rem; gap: .4rem; flex-wrap: wrap; }
+  .kicker-bar .brand { font-size: 1.3rem; }
+  .kicker-bar .pill { font-size: 1rem; padding: 2px 10px; white-space: nowrap; }
+  .kicker-bar .step { font-size: 1rem; }
+  .reset-btn { font-size: .9rem; padding: 4px 10px; }
+  .reset-btn { display: none; }  /* hide reset on very small screens; keyboard 'r' or 9-key reset still works via existing handlers */
+
+  /* Title block: smaller hero */
+  .slide-title { font-size: clamp(1.8rem, 7vw, 2.6rem) !important; }
+  .slide-subtitle { font-size: 1rem; }
+
+  /* Cards: less padding, smaller text */
+  .card { padding: 1rem; }
+  .card-kicker-wrap { margin-bottom: .5rem; }
+  .info-card { padding: .7rem .9rem; }
+  .info-card-title { font-size: 1.15rem; }
+  .info-card p { font-size: .95rem; }
+  .explanation, .try-this { padding: .7rem .9rem; font-size: .95rem; }
+
+  /* Actor diagrams: even smaller boxes, allow vertical flow on tiny screens */
+  .actor-box { min-width: 60px; max-width: 100px; font-size: 1.05rem; padding: .5rem .6rem; }
+  .actor-arrow { font-size: 1.1rem; min-width: 18px; }
+  .actor { gap: 6px; padding: .8rem 0; }
+
+  /* Topic folder / partition / record chips: scale down */
+  .topic-box { padding: .8rem; }
+  .topic-label { font-size: 1.1rem; }
+  .partition { min-width: 0; padding: .4rem; }
+  .partition-title { font-size: 1rem; }
+  .record { padding: 4px 6px; font-size: .9rem; }
+
+  /* Tables: shrink fonts, allow horizontal scroll if needed */
+  .decision-table th, .decision-table td { padding: 6px 8px; font-size: .9rem; }
+  .decision-table { font-size: .9rem; }
+
+  /* Interactive demo rows: stack vertically */
+  .partitions { flex-direction: column; }
+  .producer { flex-direction: column; }
+  .producer button { width: 100%; }
+
+  /* Navbar: tighter */
+  .navbar { gap: .4rem; padding: 8px 1rem; }
+  .nav-btn { padding: 8px 10px; font-size: .9rem; }
+  .nav-label { display: none; }
+  .nav-dots { gap: 4px; }
+  .nav-dot { width: 8px; height: 8px; }
+
+  /* Slide body: tighter padding */
+  .slide-body { padding: 1rem 1rem 5rem; }
+}
