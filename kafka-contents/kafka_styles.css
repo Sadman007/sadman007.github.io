@@ -18,6 +18,7 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
+html, body { height: 100dvh; }
 body {
   font-family: 'Work Sans', sans-serif;
   font-size: 1.15rem;             /* base font bumped from default 16px to ~18px */
@@ -27,14 +28,17 @@ body {
   -webkit-font-smoothing: antialiased;
   background-image: radial-gradient(rgba(61,50,41,.06) 1.1px, transparent 1.3px);
   background-size: 22px 22px;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
 /* ---- Deck viewport ---- */
 .deck {
   position: relative;
+  flex: 1;
   width: 100vw;
-  height: 100vh;
+  min-height: 0;
   overflow: hidden;
 }
 .slide {
@@ -155,7 +159,7 @@ body {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 1.6rem clamp(1.5rem, 3vw, 3rem) 5rem;
+  padding: 1.6rem clamp(1.5rem, 3vw, 3rem) 2rem;
   max-width: 1400px;
   width: 100%;
   margin: 0 auto;
@@ -874,10 +878,9 @@ button.toggle.active {
 
 /* ---- Navigation bar ---- */
 .navbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: relative;
+  width: 100%;
+  flex-shrink: 0;
   background: var(--ink);
   padding: 12px clamp(1rem, 3vw, 2rem);
   display: flex;
@@ -1018,7 +1021,6 @@ button.toggle.active {
   .nav-dots { gap: 4px; }
   .nav-dot { width: 8px; height: 8px; }
 
-  /* Slide body: bottom padding leaves room above the fixed navbar so the last
-     line of any slide is reachable by scrolling within .slide-body. */
-  .slide-body { padding: .8rem .8rem 5rem; }
+  /* Slide body: small bottom padding so the last card is not flush with the edge. */
+  .slide-body { padding: .8rem .8rem 1.5rem; }
 }
