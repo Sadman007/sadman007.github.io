@@ -305,3 +305,19 @@ h3 {
     align-items: flex-start;
   }
 }
+
+/* ---- Slide-deck tag pill (shown next to slide-deck post titles on the home page) ---- */
+.post-pill {
+  display: inline-block;
+  font-size: calc(0.65rem * var(--font-scale));
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-color);
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
