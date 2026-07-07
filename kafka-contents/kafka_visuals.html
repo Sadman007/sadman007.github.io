@@ -770,6 +770,7 @@
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
     else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+    else if (e.key === 'r' || e.key === 'R') { e.preventDefault(); resetAll(); }
   });
 
   // Touch swipe navigation for mobile (left swipe = next, right swipe = prev).

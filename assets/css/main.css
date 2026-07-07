@@ -115,12 +115,6 @@ a:hover {
   gap: 12px;
 }
 
-.brand {
-  font-family: var(--font-main);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
 .nav {
   display: flex;
   gap: 16px;
@@ -278,11 +272,6 @@ h3 {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-}
-
-.footer a {
-  color: var(--text-color);
-  font-weight: 600;
 }
 
 .social-link {

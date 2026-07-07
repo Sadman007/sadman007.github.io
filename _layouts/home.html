@@ -19,7 +19,6 @@ layout: default
         </h3>
         <div class="post-meta-row">
           <span class="post-meta">{{ post.date | date: "%b %d, %Y" }}</span>
-          {% if post.type == "slide-deck" %}<span class="post-pill">Slide deck</span>{% endif %}
         </div>
       </li>
     {% endfor %}
