@@ -5,3 +5,6 @@ theme: null
 permalink: /:categories/:title/
 markdown: kramdown
 author: "Sadman Sakib"
+exclude:
+  - AGENTS.md
+  - CLAUDE.md

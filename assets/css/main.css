@@ -3,7 +3,7 @@
   --text-color: #2f343a;
   --muted-color: #6a727c;
   --card-color: #ffffff;
-  --accent-color: #7a818a;
+  --accent-color: #35656a;
   --border-color: #e4e7eb;
   --shadow: 0 10px 22px rgba(27, 34, 42, 0.05);
   --font-main: "Playfair Display", "Times New Roman", serif;
@@ -87,7 +87,7 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
   line-height: 1.65;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 a {
@@ -97,6 +97,27 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+a:focus-visible {
+  outline: 3px solid var(--accent-color);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+  padding: 8px 12px;
+  color: var(--card-color);
+  background: var(--text-color);
+  transform: translateY(-160%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
 }
 
 .container {
@@ -126,7 +147,16 @@ a:hover {
 }
 
 .nav-link {
-  padding: 6px 0;
+  padding: 6px 0 4px;
+  border-bottom: 2px solid transparent;
+  color: var(--muted-color);
+}
+
+.nav-link:hover,
+.nav-link[aria-current="page"] {
+  border-bottom-color: var(--accent-color);
+  color: var(--text-color);
+  text-decoration: none;
 }
 
 .page-head {
@@ -153,7 +183,7 @@ h2,
 h3 {
   font-family: var(--font-main);
   font-weight: 700;
-  letter-spacing: -0.4px;
+  letter-spacing: 0;
   margin: 0;
 }
 
@@ -184,11 +214,12 @@ h3 {
 }
 
 .post-item {
+  position: relative;
   margin: 0;
   padding: 18px 20px;
   background: var(--card-color);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
@@ -214,6 +245,11 @@ h3 {
   box-shadow: 0 14px 28px rgba(27, 34, 42, 0.08);
 }
 
+.post-item:focus-within {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(53, 101, 106, 0.2);
+}
+
 .post-item h3 {
   margin: 0;
   font-size: calc(22px * var(--font-scale));
@@ -222,6 +258,16 @@ h3 {
 .post-item h3 a {
   color: var(--text-color);
   text-decoration: none;
+}
+
+.post-item h3 a::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+}
+
+.post-item h3 a:focus-visible {
+  outline: none;
 }
 
 .post-item h3 a:hover {
@@ -297,6 +343,18 @@ h3 {
   box-shadow: var(--shadow);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .post-item,
+  .social-link {
+    transition: none;
+  }
+
+  .post-item:hover,
+  .social-link:hover {
+    transform: none;
+  }
+}
+
 @media (max-width: 760px) {
   .post-list {
     grid-template-columns: 1fr;
@@ -309,6 +367,10 @@ h3 {
 
   .about-photo-wrap {
     justify-content: flex-start;
+  }
+
+  .author-photo {
+    max-width: 180px;
   }
 }
 

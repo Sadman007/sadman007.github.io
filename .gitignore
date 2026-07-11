@@ -19,3 +19,7 @@ Thumbs.db
 
 # Internal design / planning notes (kept out of the public site)
 docs/superpowers/
+
+# Local agent instructions
+AGENTS.md
+CLAUDE.md
