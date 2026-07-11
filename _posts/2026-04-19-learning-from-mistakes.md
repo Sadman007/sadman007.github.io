@@ -8,7 +8,7 @@ categories: thoughts
 
 We hear that all the time, but it is not always true. Real learning requires a mix of experience and courage. If you are afraid of failing, it is natural to feel awkward about trying new things. You end up fearing the "failure" more than you value the lesson gained throughout the process. 
 
-![Learning process](/assets/images/learning-1.png)
+![Learning process](/assets/images/posts/learning-from-mistakes/learning-process.png)
 
 Let’s look at this mathematically.
 
@@ -16,11 +16,11 @@ Imagine you try ten different ways to solve a problem. You only need **one** of 
 
 Does that make the other nine irrelevant? Not at all. Those nine attempts give you the data and experience that steer you toward the one successful solution. Without them, you would never reach the finish line! Just look at James Dyson, who famously built 5,126 failed prototypes before finding the one vacuum design that finally worked.
 
-![Mathematical approach to failure](/assets/images/learning-2.png)
+![Mathematical approach to failure](/assets/images/posts/learning-from-mistakes/iterative-attempts.png)
 
 Unfortunately, most people only try three or four times. They are so hyper-focused on winning that they miss the crucial clues hidden in their failed attempts. There is even a sadder reality; many others never even take the first step. They give up before they even begin...
 
-![Taking the first step](/assets/images/learning-3.png)
+![Taking the first step](/assets/images/posts/learning-from-mistakes/taking-the-first-step.png)
 
 Learning is an iterative process. It does not happen overnight. You cannot skip the steps; you have to follow the process to get the result.
 
